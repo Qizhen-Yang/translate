@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Translatior</title>
+	<style>
+		body {
+			font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			background-color: white;
+			margin: 0;
+			padding: 0;
+			text-align: center;
+		}
+
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 50px;
+		}
+
+		p {
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		input[type="text"],
+		textarea {
+			font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			padding: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			margin-bottom: 20px;
+			width: 600px;
+			max-width: 90%;
+			resize: none;
+			outline: none;
+			transition: border-color 0.3s ease-in-out;
+		}
+
+		input[type="text"]:focus,
+		textarea:focus {
+			border-color: #4CAF50;
+		}
+
+		button {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px 20px;
+			border-radius: 5px;
+			margin-bottom: 20px;
+			border: none;
+			cursor: pointer;
+			font-size: 16px;
+			transition: background-color 0.3s ease-in-out;
+		}
+
+		button:active {
+			background-color: #2D883A;
+		}
+
+		button:disabled {
+			background-color: #ccc;
+			cursor: not-allowed;
+		}
+
+		.result {
+			padding: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			margin: 0 auto 20px;
+			width: 600px;
+			max-width: 90%;
+			height: 200px;
+			overflow-y: auto;
+			transition: border 0.3s ease-in-out;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>GPT-3.5-Turbo based translator</h1>
+	<p>Enter text to translate:</p>
+	<textarea id="input-text" rows="10"></textarea>
+	<p>Translation: <span id="tokens">0 tokens used. ($0)</span></p>
+	<div class="result" id="output-text"></div>
+	<button id="submit-button" onclick="handleSubmit()">Translate</button>
+	<script>
+		function countTokens(str) {
+			const charCount = str.length;
+			const chineseCharCount = str.split('').filter(c => /\p{Script=Han}/u.test(c)).length; // 统计中文字符数量
+			const englishCharCount = str.split('').filter(c => /[a-zA-Z]/.test(c)).length; // 计算英文字符数量
+			const tokenCount = Math.floor(englishCharCount / 4 + chineseCharCount * 2); // 根据规则计算 token 数量
+			return tokenCount;
+		}
+
+		async function handleSubmit() {
+			// Get the user input
+			const userInput = document.getElementById("input-text").value;
+			let result;
+
+			// Disable the button until the translation is complete
+			const submitButton = document.getElementById("submit-button");
+			submitButton.disabled = true;
+			submitButton.textContent = "Translating...";
+			if (countTokens(userInput) < 3) {
+				result = "The minimum requirement for translation is to consist of at least 3 tokens."
+				document.getElementById("tokens").textContent = "0 tokens used. ($0)";
+			} else {
+				try {
+					// Send the user input to the translation API
+					const translateUrl = `https://translate.qizhen-yang.workers.dev/?message=${encodeURIComponent(
+						userInput
+					)}`;
+					const response = await fetch(translateUrl);
+					const translation = await response.json();
+	
+					result = translation.choices[0].message.content;
+					tokens = translation.usage.total_tokens;
+					document.getElementById("tokens").textContent = `${tokens} tokens used. ($${parseFloat(tokens * 0.000002).toPrecision(3)})`;
+				} catch (error) {
+					result = error;
+				}
+			}
+			// Re-enable the button
+			submitButton.disabled = false;
+			submitButton.textContent = "Translate";
+			// Update the output with the translated text
+			const outputElement = document.getElementById("output-text");
+			outputElement.textContent = result;
+		}
+	</script>
+</body>
+
+</html>
