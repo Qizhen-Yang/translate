@@ -117,7 +117,7 @@
 			} else {
 				try {
 					// Send the user input to the translation API
-					const translateUrl = `https://translate.qizhen-yang.workers.dev/?message=${encodeURIComponent(
+					const translateUrl = `https://translate-api.qizhen-yang.cn/?message=${encodeURIComponent(
 						userInput
 					)}`;
 					const response = await fetch(translateUrl);
