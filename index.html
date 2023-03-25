@@ -98,7 +98,7 @@
 			const charCount = str.length;
 			const chineseCharCount = str.split('').filter(c => /\p{Script=Han}/u.test(c)).length; // 统计中文字符数量
 			const englishCharCount = str.split('').filter(c => /[a-zA-Z]/.test(c)).length; // 计算英文字符数量
-			const tokenCount = Math.floor(englishCharCount / 4 + chineseCharCount * 2); // 根据规则计算 token 数量
+			const tokenCount = englishCharCount / 4 + chineseCharCount * 2; // 根据规则估算 token 数量
 			return tokenCount;
 		}
 
