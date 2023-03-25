@@ -41,6 +41,7 @@
 		textarea,
 		.result {
 			flex-grow: 1;
+			overflow-y: auto;
 			padding: 10px;
 			border-radius: 5px;
 			border: 1px solid #ccc;
@@ -63,7 +64,7 @@
 			padding: 10px 20px;
 			border-radius: 5px;
 			margin-bottom: 20px;
-			width: 120px;
+			width: 150px;
 			border: none;
 			cursor: pointer;
 			font-size: 16px;
@@ -133,7 +134,7 @@
 
 					result = translation.choices[0].message.content;
 					tokens = translation.usage.total_tokens;
-					document.getElementById("tokens").textContent = `${tokens} tokens used. ($${parseFloat(tokens * 0.000002).toPrecision(3)})`;
+					document.getElementById("tokens").textContent = `${tokens} tokens used. ($${parseFloat(tokens * 0.000002).toPrecision(2)})`;
 				} catch (error) {
 					result = error;
 				}
