@@ -111,8 +111,8 @@
 			const submitButton = document.getElementById("submit-button");
 			submitButton.disabled = true;
 			submitButton.textContent = "Translating...";
-			if (countTokens(userInput) < 3) {
-				result = "The minimum requirement for translation is to consist of at least 3 tokens."
+			if (countTokens(userInput) < 2) {
+				result = "The minimum requirement for translation is to consist of at least 2 tokens."
 				document.getElementById("tokens").textContent = "0 tokens used. ($0)";
 			} else {
 				try {
